@@ -1,43 +1,41 @@
 package View;
 
+import java.awt.Component;
+import java.awt.FlowLayout;
+
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import Components.Controller.TopBarController;
+import Components.View.PasswordComponent;
+import Components.View.TextComponent;
 import Components.View.TopBarView;
 import Interface.View;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 
 public class LoginView extends JFrame implements View {
     public static final int DISPLAY_WIDTH = 1920;
     public static final int DISPLAY_HIGHT = 1024;
-    public static final int WINDOW_WIDTH = 400;
+    public static final int WINDOW_WIDTH = 489;
     public static final int WINDOW_HIGHT = 400;
 
-    private JLabel usernameLabel;
-    private JLabel passwordLabel;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+    private TextComponent usernameComponent;
+    private PasswordComponent passwordComponent;
     private JButton loginBtn;
     private JButton cancelBtn;
+    private JLabel signUpLabel;
 
     public LoginView() {
         setTitle("Login");
-        setSize(WINDOW_WIDTH, WINDOW_HIGHT);
+        // setSize(WINDOW_WIDTH, WINDOW_HIGHT);
         // center the frame
         int x = (DISPLAY_WIDTH - WINDOW_WIDTH) / 2;
         int y = (DISPLAY_HIGHT - WINDOW_HIGHT) / 2;
         setLocation(x, y);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // setLayout(new FlowLayout());
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         /* Get all the fonts of the system */
         // GraphicsEnvironment ge = GraphicsEnvironment
         // .getLocalGraphicsEnvironment();
@@ -48,40 +46,35 @@ public class LoginView extends JFrame implements View {
         // System.out.println(font.getFontName(Locale.US));
         // }
 
-        // setLayout(new GridBagLayout());
-        // GridBagConstraints grid = new GridBagConstraints();
-        // grid.fill = GridBagConstraints.HORIZONTAL;
-
-        usernameLabel = new JLabel("username:");
-        passwordLabel = new JLabel("password:");
-        usernameField = new JTextField(30);
-        passwordField = new JPasswordField(30);
-        loginBtn = new JButton("Login");
-        cancelBtn = new JButton("Cancel");
-
         TopBarView topBar = new TopBarView();
         new TopBarController(topBar, this);
-        add(topBar, BorderLayout.NORTH);
 
-        JPanel p = new JPanel();
-        // p.setLayout(new FlowLayout(FlowLayout.CENTER));
-        p.setLayout(new FlowLayout());
-        p.add(usernameLabel);
-        p.add(usernameField);
-        p.add(passwordLabel);
-        p.add(passwordField);
-        p.add(loginBtn);
-        p.add(cancelBtn);
+        JPanel inputP = new JPanel();
+        inputP.setLayout(new BoxLayout(inputP, BoxLayout.Y_AXIS));
+        usernameComponent = new TextComponent("Username:");
+        passwordComponent = new PasswordComponent("Password:");
+        inputP.add(usernameComponent);
+        inputP.add(passwordComponent);
 
-        add(p, BorderLayout.CENTER);
-        // addComponents(
-        // usernameLabel,
-        // usernameField,
-        // passwordLabel,
-        // passwordField,
-        // loginBtn,
-        // cancelBtn);
+        JPanel btnP = new JPanel();
+        btnP.setLayout(new FlowLayout(FlowLayout.CENTER));
+        loginBtn = new JButton("Login");
+        cancelBtn = new JButton("Cancel");
+        btnP.add(loginBtn);
+        btnP.add(cancelBtn);
+        inputP.add(btnP);
+
+        JPanel signUpP = new JPanel();
+        signUpP.setLayout(new FlowLayout(FlowLayout.CENTER));
+        signUpP.add(new JLabel("Don't have an account?"));
+        signUpLabel = new JLabel("Sign Up");
+        signUpP.add(signUpLabel);
+
+        add(topBar);
+        add(inputP);
+        add(signUpP);
         setVisible(true);
+        pack();
     }
 
     public void addComponents(Component... components) {
@@ -99,19 +92,23 @@ public class LoginView extends JFrame implements View {
     }
 
     public String getUsername() {
-        return usernameField.getText();
+        return usernameComponent.getText();
     }
 
     public String getPassword() {
-        return new String(passwordField.getPassword());
+        return passwordComponent.getPassword();
     }
 
     public void setUsername(String u) {
-        usernameField.setText(u);
+        usernameComponent.setText(u);
     }
 
     public void setPassword(String p) {
-        passwordField.setText(p);
+        passwordComponent.setPassword(p);
+    }
+
+    public JLabel getSignUpBtn() {
+        return signUpLabel;
     }
 
     public JFrame getFrame() {

@@ -1,5 +1,7 @@
 package Enums;
 
+import java.util.stream.Stream;
+
 public enum Gender {
     MALE("Male"),
     FEMALE("Female");
@@ -21,5 +23,11 @@ public enum Gender {
             }
         }
         throw new IllegalArgumentException("Invalid gender string: " + gender);
+    }
+
+    public static String[] getAllValues() {
+        return Stream.of(Gender.values())
+                .map(Gender::getValue)
+                .toArray(String[]::new);
     }
 }

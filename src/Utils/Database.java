@@ -16,6 +16,7 @@ public class Database {
     private String password = env.get("POSTGRES_PASSWORD");
     private String db = env.get("POSTGRES_DB");
     private String url = "jdbc:postgresql://localhost:5432/" + db;
+    // private String url = "jdbc:postgresql://0.0.0.0:5432/" + db;
 
     // Connection
     private Connection connection;
@@ -81,6 +82,7 @@ public class Database {
             // Ensure resources are properly closed
             closeResultSet(generatedKeys);
             closeStatement(statement);
+            close();
         }
         return rowsInserted;
     }
