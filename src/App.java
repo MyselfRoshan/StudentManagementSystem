@@ -1,16 +1,14 @@
 import java.awt.event.MouseAdapter;
 
 import Controller.SignUpController;
+import Model.SignUpModel;
 import View.SignUpView;
 
 public class App extends MouseAdapter {
     public static void main(String[] args) {
-
-        // LoginModel lModel = new LoginModel();
-        new SignUpController(new SignUpView());
-        // new LoginController(new LoginView(), new LoginModel());
-        // new SignUpView();
-
+        new SignUpController(new SignUpView(), new SignUpModel());
+        // new DashboardView();
+        // new Test();
         // Database db = new Database();
 
         // Example usage: SELECT query

@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import Model.LoginModel;
+import Model.SignUpModel;
 import Model.Student;
 import Utils.Database;
 import View.LoginView;
@@ -18,9 +19,11 @@ import View.SignUpView;
 
 public class SignUpController {
     private SignUpView view;
+    private SignUpModel model;
 
-    public SignUpController(SignUpView view) {
+    public SignUpController(SignUpView view, SignUpModel model) {
         this.view = view;
+        this.model = model;
 
         view.getSignUpBtn().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -44,8 +47,8 @@ public class SignUpController {
                                                 3, s.getName(),
                                                 4, s.getAddress(),
                                                 5, s.getPhoneNumber(),
-                                                6, s.getFaculty().getValue(),
-                                                7, s.getGender().getValue()));
+                                                7, s.getGender().getValue(),
+                                                6, s.getFaculty().getValue()));
                     }
                 } catch (SQLException err) {
                     System.out.println("Error while inserting students: " + err);
@@ -62,12 +65,12 @@ public class SignUpController {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                view.getLoginBtn().setText("<html><u>Sign in</u></html>");
+                view.getLoginBtn().setText("<html><u>Login</u></html>");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                view.getLoginBtn().setText("Sign in");
+                view.getLoginBtn().setText("Login");
             }
         });
     }
@@ -122,22 +125,28 @@ public class SignUpController {
         else if (usernameExists(s.getUsername()))
             errMsg.append("Username already exists\n");
 
+        if (s.getPassword().isEmpty())
+            errMsg.append("Password not be empty\n");
+
         if (s.getName().isEmpty())
             errMsg.append("Name should not be empty\n");
         else if (!isValidName(s.getName()))
             errMsg.append("Name must contain only letters and spaces.\n");
 
+        if (s.getAddress().isEmpty())
+            errMsg.append("Address not be empty\n");
+
         if (s.getPhoneNumber() == 0)
             errMsg.append("Phone number should not be empty\n");
         else if (!isValidNumber(s.getPhoneNumber()))
-            errMsg.append("Invalid phone number format!\n");
+            errMsg.append("Phone number should be 10 digit long\n");
         else if (phoneNumberExists(s.getPhoneNumber()))
             errMsg.append("Phone number already exists\n");
 
         if (!errMsg.isEmpty()) {
             showError(errMsg.toString());
         }
-        // System.out.println(errMsg);
+
         return errMsg.isEmpty();
     }
 

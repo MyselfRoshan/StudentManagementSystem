@@ -24,6 +24,16 @@ public class Student {
         this.faculty = faculty;
     }
 
+    public Student(String username, String name, String address, long phoneNumber, Gender gender,
+            Faculty faculty) {
+        this.username = username;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.faculty = faculty;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
