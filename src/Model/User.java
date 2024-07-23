@@ -1,14 +1,18 @@
 package Model;
 
+import Enums.Role;
+
 public class User {
     private String username;
     private String password;
     private String confirmPassword;
+    private Role role;
 
-    public User(String username, String password, String confirmPassword) {
+    public User(String username, String password, String confirmPassword, Role role) {
         this.username = username;
         this.password = password;
         this.confirmPassword = confirmPassword;
+        this.role = role;
     }
 
     public void setUsername(String username) {
@@ -33,5 +37,9 @@ public class User {
 
     public String getConfirmPassword() {
         return confirmPassword;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

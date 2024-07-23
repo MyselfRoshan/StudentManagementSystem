@@ -30,7 +30,8 @@ public class SignUpController {
                 User u = view.getUser();
                 System.out.println(u.getUsername() + "\n" +
                         u.getPassword() + "\n" +
-                        u.getConfirmPassword() + "\n");
+                        u.getConfirmPassword() + "\n" +
+                        u.getRole() + "\n");
                 // Student s = view.getStudent();
                 // System.out.println(
                 // s.getUsername() + "\n" +
@@ -41,25 +42,27 @@ public class SignUpController {
                 // s.getFaculty() + "\n" +
                 // s.getGender() + "\n");
 
-                // try {
-                if (isValidForm(view, u)) {
-                    System.out.println("sucess");
-                    // if (isValidForm(view, s)) {
-                    // (new Database())
-                    // .insert("INSERT INTO student(username, password, name, address, phone_number,
-                    // faculty, gender) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                    // Map.of(
-                    // 1, s.getUsername(),
-                    // 2, s.getPassword(),
-                    // 3, s.getName(),
-                    // 4, s.getAddress(),
-                    // 5, s.getPhoneNumber(),
-                    // 7, s.getGender().getValue(),
-                    // 6, s.getFaculty().getValue()));
+                try {
+                    if (isValidForm(view, u)) {
+                        (new Database()).insert("INSERT INTO public.user(username, password, role) VALUES(?,?,?)",
+                                Map.of(1, u.getUsername(), 2, u.getPassword(), 3, u.getRole().getValue()));
+                        System.out.println("sucess");
+                        // if (isValidForm(view, s)) {
+                        // (new Database())
+                        // .insert("INSERT INTO student(username, password, name, address, phone_number,
+                        // faculty, gender) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                        // Map.of(
+                        // 1, s.getUsername(),
+                        // 2, s.getPassword(),
+                        // 3, s.getName(),
+                        // 4, s.getAddress(),
+                        // 5, s.getPhoneNumber(),
+                        // 7, s.getGender().getValue(),
+                        // 6, s.getFaculty().getValue()));
+                    }
+                } catch (SQLException err) {
+                    System.out.println("Error while inserting students: " + err);
                 }
-                // } catch (SQLException err) {
-                // System.out.println("Error while inserting students: " + err);
-                // }
             }
         });
 
@@ -100,7 +103,7 @@ public class SignUpController {
     private static boolean usernameExists(String username) {
         boolean exists = false;
         try {
-            ResultSet rs = (new Database()).select("SELECT username FROM Student WHERE username = ?",
+            ResultSet rs = (new Database()).select("SELECT username FROM public.user WHERE username = ?",
                     Map.of(1, username));
             exists = rs.next();
         } catch (SQLException e) {
@@ -113,7 +116,7 @@ public class SignUpController {
     private static boolean phoneNumberExists(long phoneNumber) {
         boolean exists = false;
         try {
-            ResultSet rs = (new Database()).select("SELECT phone_number FROM Student WHERE phone_number = ?",
+            ResultSet rs = (new Database()).select("SELECT phone_number FROM public.user WHERE phone_number = ?",
                     Map.of(1, phoneNumber));
             exists = rs.next();
         } catch (SQLException e) {
@@ -139,9 +142,11 @@ public class SignUpController {
             errMsg.append("Confirm Password not be empty\n");
         }
 
-        if (!u.getPassword().equals(u.getConfirmPassword())) {
+        if (!u.getPassword().equals(u.getConfirmPassword()) && !u.getPassword().isEmpty()
+                && !u.getConfirmPassword().isEmpty()) {
             errMsg.append("Password and Confirm Password does not match\n");
         }
+
         if (!errMsg.isEmpty()) {
             showError(errMsg.toString());
         }

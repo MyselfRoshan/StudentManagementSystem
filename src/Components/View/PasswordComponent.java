@@ -1,6 +1,6 @@
 package Components.View;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,10 +14,13 @@ public class PasswordComponent extends JPanel {
         this.label = new JLabel(label);
         passwordField = new JPasswordField(columns);
 
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+        // setLayout(new FlowLayout(FlowLayout.LEFT));
+        setLayout(new BorderLayout());
 
-        add(this.label);
-        add(passwordField);
+        add(this.label, BorderLayout.LINE_START);
+        add(passwordField, BorderLayout.LINE_END);
+        // setPreferredSize(new Dimension(200, 32));
+
     }
 
     public PasswordComponent(String label) {
