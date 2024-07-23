@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -71,14 +71,16 @@ public class LoginController {
         Database db = new Database();
 
         // Query to retrieve hashed password for the given username
-        String sql = "SELECT password FROM student WHERE username = ?";
+        // String sql = "SELECT password FROM student WHERE username = ?";
         ResultSet rs = null;
-        PreparedStatement statement = null;
+        // PreparedStatement statement = null;
 
         try {
-            statement = db.getConnection().prepareStatement(sql);
-            statement.setString(1, username);
-            rs = statement.executeQuery();
+            rs = (new Database()).select("SELECT password FROM student WHERE username = ?", Map.of(
+                    1, username));
+            // statement = db.getConnection().prepareStatement(sql);
+            // statement.setString(1, username);
+            // rs = statement.executeQuery();
 
             if (rs.next()) {
                 String storedPassword = rs.getString("password");

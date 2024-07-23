@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 import Model.LoginModel;
 import Model.SignUpModel;
-import Model.Student;
+import Model.User;
 import Utils.Database;
 import View.LoginView;
 import View.SignUpView;
@@ -27,7 +27,12 @@ public class SignUpController {
 
         view.getSignUpBtn().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Student s = view.getStudent();
+                User u = view.getUser();
+                System.out.println(u.getUsername() + "\n" +
+                        u.getPassword() + "\n" +
+                        u.getConfirmPassword() + "\n" +
+                        u.getRole() + "\n");
+                // Student s = view.getStudent();
                 // System.out.println(
                 // s.getUsername() + "\n" +
                 // s.getPassword() + "\n" +
@@ -38,17 +43,22 @@ public class SignUpController {
                 // s.getGender() + "\n");
 
                 try {
-                    if (isValidForm(view, s)) {
-                        (new Database())
-                                .insert("INSERT INTO student(username, password, name, address, phone_number, faculty, gender) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                                        Map.of(
-                                                1, s.getUsername(),
-                                                2, s.getPassword(),
-                                                3, s.getName(),
-                                                4, s.getAddress(),
-                                                5, s.getPhoneNumber(),
-                                                7, s.getGender().getValue(),
-                                                6, s.getFaculty().getValue()));
+                    if (isValidForm(view, u)) {
+                        (new Database()).insert("INSERT INTO public.user(username, password, role) VALUES(?,?,?)",
+                                Map.of(1, u.getUsername(), 2, u.getPassword(), 3, u.getRole().getValue()));
+                        System.out.println("sucess");
+                        // if (isValidForm(view, s)) {
+                        // (new Database())
+                        // .insert("INSERT INTO student(username, password, name, address, phone_number,
+                        // faculty, gender) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                        // Map.of(
+                        // 1, s.getUsername(),
+                        // 2, s.getPassword(),
+                        // 3, s.getName(),
+                        // 4, s.getAddress(),
+                        // 5, s.getPhoneNumber(),
+                        // 7, s.getGender().getValue(),
+                        // 6, s.getFaculty().getValue()));
                     }
                 } catch (SQLException err) {
                     System.out.println("Error while inserting students: " + err);
@@ -93,7 +103,7 @@ public class SignUpController {
     private static boolean usernameExists(String username) {
         boolean exists = false;
         try {
-            ResultSet rs = (new Database()).select("SELECT username FROM Student WHERE username = ?",
+            ResultSet rs = (new Database()).select("SELECT username FROM public.user WHERE username = ?",
                     Map.of(1, username));
             exists = rs.next();
         } catch (SQLException e) {
@@ -106,7 +116,7 @@ public class SignUpController {
     private static boolean phoneNumberExists(long phoneNumber) {
         boolean exists = false;
         try {
-            ResultSet rs = (new Database()).select("SELECT phone_number FROM Student WHERE phone_number = ?",
+            ResultSet rs = (new Database()).select("SELECT phone_number FROM public.user WHERE phone_number = ?",
                     Map.of(1, phoneNumber));
             exists = rs.next();
         } catch (SQLException e) {
@@ -116,32 +126,26 @@ public class SignUpController {
         return exists;
     }
 
-    public boolean isValidForm(SignUpView v, Student s) {
+    public boolean isValidForm(SignUpView v, User u) {
         StringBuilder errMsg = new StringBuilder();
-        if (s.getUsername().isEmpty())
+        if (u.getUsername().isEmpty())
             errMsg.append("Username should not be empty\n");
-        else if (!isValidUsername(s.getUsername()))
+        else if (!isValidUsername(u.getUsername()))
             errMsg.append("Username must be alphanumeric\n");
-        else if (usernameExists(s.getUsername()))
+        else if (usernameExists(u.getUsername()))
             errMsg.append("Username already exists\n");
 
-        if (s.getPassword().isEmpty())
+        if (u.getPassword().isEmpty())
             errMsg.append("Password not be empty\n");
 
-        if (s.getName().isEmpty())
-            errMsg.append("Name should not be empty\n");
-        else if (!isValidName(s.getName()))
-            errMsg.append("Name must contain only letters and spaces.\n");
+        if (u.getConfirmPassword().isEmpty()) {
+            errMsg.append("Confirm Password not be empty\n");
+        }
 
-        if (s.getAddress().isEmpty())
-            errMsg.append("Address not be empty\n");
-
-        if (s.getPhoneNumber() == 0)
-            errMsg.append("Phone number should not be empty\n");
-        else if (!isValidNumber(s.getPhoneNumber()))
-            errMsg.append("Phone number should be 10 digit long\n");
-        else if (phoneNumberExists(s.getPhoneNumber()))
-            errMsg.append("Phone number already exists\n");
+        if (!u.getPassword().equals(u.getConfirmPassword()) && !u.getPassword().isEmpty()
+                && !u.getConfirmPassword().isEmpty()) {
+            errMsg.append("Password and Confirm Password does not match\n");
+        }
 
         if (!errMsg.isEmpty()) {
             showError(errMsg.toString());
@@ -149,6 +153,39 @@ public class SignUpController {
 
         return errMsg.isEmpty();
     }
+    // public boolean isValidForm(SignUpView v, Student s) {
+    // StringBuilder errMsg = new StringBuilder();
+    // if (s.getUsername().isEmpty())
+    // errMsg.append("Username should not be empty\n");
+    // else if (!isValidUsername(s.getUsername()))
+    // errMsg.append("Username must be alphanumeric\n");
+    // else if (usernameExists(s.getUsername()))
+    // errMsg.append("Username already exists\n");
+
+    // if (s.getPassword().isEmpty())
+    // errMsg.append("Password not be empty\n");
+
+    // if (s.getName().isEmpty())
+    // errMsg.append("Name should not be empty\n");
+    // else if (!isValidName(s.getName()))
+    // errMsg.append("Name must contain only letters and spaces.\n");
+
+    // if (s.getAddress().isEmpty())
+    // errMsg.append("Address not be empty\n");
+
+    // if (s.getPhoneNumber() == 0)
+    // errMsg.append("Phone number should not be empty\n");
+    // else if (!isValidNumber(s.getPhoneNumber()))
+    // errMsg.append("Phone number should be 10 digit long\n");
+    // else if (phoneNumberExists(s.getPhoneNumber()))
+    // errMsg.append("Phone number already exists\n");
+
+    // if (!errMsg.isEmpty()) {
+    // showError(errMsg.toString());
+    // }
+
+    // return errMsg.isEmpty();
+    // }
 
     public void showError(String msg) {
         JOptionPane.showMessageDialog(view,

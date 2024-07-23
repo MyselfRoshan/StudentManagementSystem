@@ -1,12 +1,16 @@
 import java.awt.event.MouseAdapter;
 
+import javax.swing.SwingUtilities;
+
 import Controller.SignUpController;
 import Model.SignUpModel;
 import View.SignUpView;
 
 public class App extends MouseAdapter {
     public static void main(String[] args) {
-        new SignUpController(new SignUpView(), new SignUpModel());
+        SwingUtilities.invokeLater(() -> {
+            new SignUpController(new SignUpView(), new SignUpModel());
+        });
         // new DashboardView();
         // new Test();
         // Database db = new Database();

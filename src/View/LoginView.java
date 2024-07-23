@@ -11,8 +11,10 @@ import javax.swing.JPanel;
 
 import Components.Controller.TopBarController;
 import Components.View.PasswordComponent;
+import Components.View.RadioComponent;
 import Components.View.TextComponent;
 import Components.View.TopBarView;
+import Enums.Role;
 import Interface.View;
 
 public class LoginView extends JFrame implements View {
@@ -23,6 +25,7 @@ public class LoginView extends JFrame implements View {
 
     private TextComponent usernameComponent;
     private PasswordComponent passwordComponent;
+    private RadioComponent roleComponent;
     private JButton loginBtn;
     private JButton cancelBtn;
     private JLabel signUpLabel;
@@ -56,13 +59,15 @@ public class LoginView extends JFrame implements View {
         inputP.add(usernameComponent);
         inputP.add(passwordComponent);
 
+        roleComponent = new RadioComponent("Role:", Role.getStringValues());
+        roleComponent.setSelectedBtnText(Role.ADMIN.name());
+
         JPanel btnP = new JPanel();
         btnP.setLayout(new FlowLayout(FlowLayout.CENTER));
         loginBtn = new JButton("Login");
         cancelBtn = new JButton("Cancel");
         btnP.add(loginBtn);
         btnP.add(cancelBtn);
-        inputP.add(btnP);
 
         JPanel signUpP = new JPanel();
         signUpP.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -72,6 +77,8 @@ public class LoginView extends JFrame implements View {
 
         add(topBar);
         add(inputP);
+        add(roleComponent);
+        add(btnP);
         add(signUpP);
         setVisible(true);
         pack();
